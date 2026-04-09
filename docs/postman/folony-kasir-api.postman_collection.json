@@ -21,6 +21,10 @@
     {
       "key": "transaction_id",
       "value": "1"
+    },
+    {
+      "key": "member_id",
+      "value": "11"
     }
   ],
   "item": [
@@ -39,7 +43,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Yudosand\",\n  \"email\": \"demo@foloni.com\",\n  \"password\": \"123456\"\n}",
+              "raw": "{\n  \"name\": \"Yudosand\",\n  \"phone\": \"081234567890\",\n  \"password\": \"123456\",\n  \"password_confirmation\": \"123456\",\n  \"referal\": \"FOLONI_ADM01\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -61,7 +65,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"demo@foloni.com\",\n  \"password\": \"123456\"\n}",
+              "raw": "{\n  \"phone\": \"081234567890\",\n  \"password\": \"123456\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -103,6 +107,58 @@
               }
             ],
             "url": "{{base_url}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Member Points",
+      "item": [
+        {
+          "name": "Get Member Points",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/member-points/members?member_id={{member_id}}"
+          }
+        },
+        {
+          "name": "Mutate Member Points",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": {{member_id}},\n  \"type\": \"2\",\n  \"amount\": 10000,\n  \"description\": \"Potong poin untuk test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{base_url}}/member-points/mutations"
           }
         }
       ]
@@ -315,7 +371,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 1\n    }\n  ],\n  \"payment_method\": \"split\",\n  \"cash_amount\": 1000,\n  \"non_cash_amount\": 2000\n}",
+              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 1\n    },\n    {\n      \"product_name\": \"Jasa Antar\",\n      \"quantity\": 1,\n      \"unit_price\": 5000\n    }\n  ],\n  \"payment_method\": \"split\",\n  \"cash_amount\": 1000,\n  \"non_cash_amount\": 2000,\n  \"member_id\": {{member_id}},\n  \"points_used\": 1000\n}",
               "options": {
                 "raw": {
                   "language": "json"

@@ -6,6 +6,7 @@ import '../core/network/api_client.dart';
 import '../core/network/auth_interceptor.dart';
 import '../core/network/network_config.dart';
 import '../core/network/session_invalidation_bus.dart';
+import '../core/services/product_image_optimization_service.dart';
 import '../core/storage/token_storage.dart';
 import '../data/datasources/local/auth_local_data_source.dart';
 import '../data/datasources/remote/auth_remote_data_source.dart';
@@ -48,6 +49,11 @@ final tokenStorageProvider = Provider<TokenStorage>((ref) {
 
 final sessionInvalidationBusProvider = Provider<SessionInvalidationBus>((ref) {
   return SessionInvalidationBus();
+});
+
+final productImageOptimizationServiceProvider =
+    Provider<ProductImageOptimizationService>((ref) {
+  return ProductImageOptimizationService();
 });
 
 final dioProvider = Provider<Dio>((ref) {

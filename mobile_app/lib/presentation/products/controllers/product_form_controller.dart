@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/providers.dart';
+import '../../../core/services/product_image_optimization_service.dart';
 import '../../../domain/entities/product.dart';
 
 final productFormControllerProvider = AutoDisposeNotifierProviderFamily<
@@ -38,13 +39,28 @@ class ProductFormController
       return;
     }
 
-    final imageBytes = await image.readAsBytes();
+    final optimizedImage = await _optimizeImage(image.path);
     state = state.copyWith(
-      selectedImagePath: image.path,
-      selectedImageBytes: imageBytes,
+      selectedImagePath: optimizedImage.filePath,
+      selectedImageBytes: optimizedImage.bytes,
       removeExistingImage: false,
       clearErrorMessage: true,
     );
+  }
+
+  Future<ProductImageOptimizationResult> _optimizeImage(
+    String sourcePath,
+  ) async {
+    try {
+      return await ref
+          .read(productImageOptimizationServiceProvider)
+          .optimize(sourcePath);
+    } catch (_) {
+      return ProductImageOptimizationResult(
+        filePath: sourcePath,
+        bytes: await XFile(sourcePath).readAsBytes(),
+      );
+    }
   }
 
   void removeImage() {
