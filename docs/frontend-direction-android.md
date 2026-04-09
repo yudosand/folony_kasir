@@ -30,6 +30,13 @@ The existing web demo is only a behavior and visual reference.
 - predictable auth flow
 - explicit payment fields
 
+## Product Image Handling
+- image selection should stay simple for Android users
+- product images should be optimized on-device before upload
+- current target is a longest side around `1280px`
+- current compressed quality target is around `78`
+- if optimization fails, upload flow should fall back safely to the original image instead of blocking the form
+
 ## Suggested frontend phases later
 1. auth screens
 2. home / products

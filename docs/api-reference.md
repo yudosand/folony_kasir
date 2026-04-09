@@ -115,6 +115,15 @@ Optional multipart file:
 image
 ```
 
+Image upload notes:
+
+- backend accepts image uploads up to `5 MB`
+- mobile app compresses product images before upload
+- current mobile target:
+  - longest side around `1280px`
+  - compressed quality around `78`
+- if mobile compression fails or produces a larger file, the original picked file is uploaded as a fallback
+
 ### GET `/products/{id}`
 
 Returns a single owned product.
@@ -137,6 +146,12 @@ Optional multipart file:
 ```text
 image
 ```
+
+Image update notes follow the same upload behavior as create product:
+
+- backend max size remains `5 MB`
+- mobile app uploads the optimized image result when available
+- original file is kept as a fallback when optimization is not better
 
 ### DELETE `/products/{id}`
 
@@ -256,3 +271,4 @@ Rules:
 - `payment_status` becomes `partial` when `due_amount > 0`
 - Invoice numbers follow the pattern `INVYYYYMMDDNNNN`
 - Member points remain sourced from Foloni App; mobile clients must never call Foloni App admin endpoints directly
+- The Postman collection in `docs/postman/folony-kasir-api.postman_collection.json` is kept in sync with the active API routes and can be imported directly into Postman

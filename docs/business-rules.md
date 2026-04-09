@@ -36,6 +36,10 @@
 - Users may only access their own products
 - Product stock cannot go below zero
 - Product prices are stored as numeric values in database
+- Product images are stored in filesystem storage and database stores only the path or URL
+- Mobile clients should optimize product images before upload to reduce upload time and storage usage
+- Current mobile optimization target is a longest side around `1280px` with compressed quality around `78`
+- If optimization fails or the optimized file is not smaller, the original selected image may be uploaded as a fallback
 
 ## Checkout and Transaction
 - Checkout uses master product prices at the time transaction is created
