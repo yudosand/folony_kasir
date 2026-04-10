@@ -6,6 +6,7 @@ APP_SLUG="folony_kasir"
 APP_DIR="/var/www/${APP_SLUG}"
 APP_USER="${SUDO_USER:-$USER}"
 PHP_VERSION="8.3"
+NODE_MAJOR="22"
 
 if [[ "${EUID}" -eq 0 ]]; then
   echo "Jalankan script ini sebagai user biasa yang punya akses sudo, bukan sebagai root."
@@ -107,10 +108,10 @@ install_packages() {
     git \
     unzip \
     curl \
+    ca-certificates \
+    gnupg \
     mysql-server \
     composer \
-    nodejs \
-    npm \
     "php${PHP_VERSION}" \
     "php${PHP_VERSION}-fpm" \
     "php${PHP_VERSION}-cli" \
@@ -135,6 +136,11 @@ install_packages() {
   sudo systemctl restart "php${PHP_VERSION}-fpm"
   sudo systemctl enable mysql
   sudo systemctl restart mysql
+}
+
+install_nodejs() {
+  curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | sudo -E bash -
+  sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
 }
 
 setup_database() {
@@ -210,7 +216,12 @@ configure_laravel() {
 
   composer install --no-interaction --prefer-dist --optimize-autoloader
   npm install
-  npm run build
+  if ! npm run build; then
+    echo "Build asset gagal. Mencoba ulang dengan install bersih..."
+    rm -rf node_modules package-lock.json
+    npm install
+    npm run build
+  fi
 
   if grep -q '^APP_KEY=$' "${env_file}" || ! grep -q '^APP_KEY=base64:' "${env_file}"; then
     php artisan key:generate --force
@@ -260,6 +271,7 @@ main() {
   foloni_admin_password=$(prompt_secret "FOLONI_APP_ADMIN_PASSWORD")
 
   install_packages
+  install_nodejs
   setup_database "${db_name}" "${db_user}" "${db_password}"
   clone_or_update_repo "${repo_url}" "${branch_name}"
   configure_laravel \

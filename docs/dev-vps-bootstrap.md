@@ -28,13 +28,14 @@ curl -fsSL https://raw.githubusercontent.com/yudosand/folony_kasir/master/script
   - kredensial admin `Foloni App`
 - Script akan:
   - install dependency server utama
+  - install Node.js 22 agar kompatibel dengan Vite saat ini
   - perbaiki config default Nginx agar tidak memakai IPv6 listen yang bentrok di image VPS ini
   - buat database dan user MySQL
   - clone / update repo
   - isi `.env`
   - jalankan `composer install`
   - jalankan `npm install`
-  - build asset Vite
+  - build asset Vite, lalu retry install bersih kalau kena bug optional dependency `npm`
   - jalankan migration
   - setup Nginx untuk Laravel
 
