@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import 'network_config.dart';
+
 class ApiClient {
   const ApiClient._();
 
@@ -10,9 +12,12 @@ class ApiClient {
     final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: const Duration(seconds: 20),
-        receiveTimeout: const Duration(seconds: 20),
-        sendTimeout: const Duration(seconds: 20),
+        connectTimeout:
+            const Duration(seconds: NetworkConfig.connectTimeoutSeconds),
+        receiveTimeout:
+            const Duration(seconds: NetworkConfig.receiveTimeoutSeconds),
+        sendTimeout:
+            const Duration(seconds: NetworkConfig.sendTimeoutSeconds),
         headers: const {
           'Accept': 'application/json',
         },
