@@ -158,7 +158,8 @@ class AdminDashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Detail invoice')
             ->assertSee('Produk Demo')
-            ->assertSee('Poin Member');
+            ->assertSee('Poin Member')
+            ->assertSee('Terkonfirmasi');
 
         $this->get(route('admin.products.index'))
             ->assertOk()
@@ -182,7 +183,7 @@ class AdminDashboardTest extends TestCase
             ->assertOk()
             ->assertSee('Riwayat Poin Member')
             ->assertSee('Member Demo')
-            ->assertSee('verified');
+            ->assertSee('Terkonfirmasi');
 
         $this->get(route('admin.member-points.export'))
             ->assertOk()
@@ -198,5 +199,63 @@ class AdminDashboardTest extends TestCase
         ])
             ->assertRedirect('/admin/login')
             ->assertSessionHasErrors('user');
+    }
+
+    public function test_admin_member_point_views_normalize_legacy_deducated_status_label(): void
+    {
+        Http::fake([
+            'https://foloni.test/adm/user/login' => Http::response([
+                'status_code' => 1,
+                'message' => 'Login berhasil!',
+                'result' => [
+                    'token' => 'dashboard-admin-token',
+                    'name' => 'Admin Dashboard',
+                ],
+            ], 200),
+        ]);
+
+        $user = User::factory()->create([
+            'name' => 'Kasir Dua',
+            'phone' => '081111111111',
+        ]);
+
+        $transaction = Transaction::query()->create([
+            'user_id' => $user->id,
+            'invoice_number' => 'INVTEST0002',
+            'cashier_name_snapshot' => 'Kasir Dua',
+            'cashier_email_snapshot' => 'kasir2@example.com',
+            'member_external_id' => 55,
+            'member_name_snapshot' => 'Member Lama',
+            'member_points_before' => 500,
+            'member_points_used' => 100,
+            'member_points_after' => 400,
+            'member_points_value_amount' => 100,
+            'member_point_status' => 'deducated',
+            'item_count' => 1,
+            'subtotal' => 1000,
+            'grand_total' => 900,
+            'payment_method' => 'cash',
+            'payment_status' => 'paid',
+            'cash_amount' => 900,
+            'non_cash_amount' => 0,
+            'amount_paid' => 900,
+            'change_amount' => 0,
+            'due_amount' => 0,
+        ]);
+
+        $this->post('/admin/login', [
+            'user' => 'adm.folonykasir@foodcoloni.com',
+            'password' => 'secret-admin',
+        ])->assertRedirect(route('admin.dashboard'));
+
+        $this->get(route('admin.invoices.show', $transaction))
+            ->assertOk()
+            ->assertSee('Poin terpotong')
+            ->assertDontSee('deducated');
+
+        $this->get(route('admin.member-points.index'))
+            ->assertOk()
+            ->assertSee('Poin terpotong')
+            ->assertDontSee('deducated');
     }
 }

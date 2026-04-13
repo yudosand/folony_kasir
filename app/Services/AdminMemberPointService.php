@@ -27,6 +27,9 @@ class AdminMemberPointService
         $status = trim((string) ($filters['status'] ?? ''));
         $dateFrom = trim((string) ($filters['date_from'] ?? ''));
         $dateTo = trim((string) ($filters['date_to'] ?? ''));
+        $statusAliases = $status === 'deducted'
+            ? ['deducted', 'deducated', 'dedicated']
+            : [$status];
 
         return Transaction::query()
             ->with('user:id,name,phone,email')
@@ -45,7 +48,7 @@ class AdminMemberPointService
                         });
                 });
             })
-            ->when($status !== '', fn ($query) => $query->where('member_point_status', $status))
+            ->when($status !== '', fn ($query) => $query->whereIn('member_point_status', $statusAliases))
             ->when($dateFrom !== '', fn ($query) => $query->whereDate('created_at', '>=', $dateFrom))
             ->when($dateTo !== '', fn ($query) => $query->whereDate('created_at', '<=', $dateTo))
             ->latest();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\MemberPointStatusPresenter;
 use App\Services\AdminDashboardAuthService;
 use App\Services\AdminExcelExportService;
 use App\Services\AdminMemberPointService;
@@ -56,7 +57,7 @@ class MemberPointController extends Controller
                 $mutation->member_name_snapshot ?: '-',
                 number_format((int) $mutation->member_points_used).' poin',
                 'Rp '.number_format((float) $mutation->member_points_value_amount, 0, ',', '.'),
-                (string) ($mutation->member_point_status ?: 'unknown'),
+                MemberPointStatusPresenter::label($mutation->member_point_status),
             ])->all(),
         );
     }

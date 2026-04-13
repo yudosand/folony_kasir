@@ -131,7 +131,7 @@
                         <div class="list-item">
                             <div>
                                 <div class="list-item__title">Nilai Potongan</div>
-                                <div class="list-item__meta">{{ $invoice->member_point_status ?: 'Status belum ada' }}</div>
+                                <div class="list-item__meta">{{ \App\Support\MemberPointStatusPresenter::label($invoice->member_point_status) }}</div>
                             </div>
                             <div class="list-item__title">Rp {{ number_format((float) $invoice->member_points_value_amount, 0, ',', '.') }}</div>
                         </div>

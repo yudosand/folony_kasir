@@ -25,6 +25,7 @@
                 <label for="status">Status Sinkron</label>
                 <select id="status" name="status">
                     <option value="">Semua</option>
+                    <option value="deducted" @selected(($filters['status'] ?? '') === 'deducted')>Poin Terpotong</option>
                     <option value="verified" @selected(($filters['status'] ?? '') === 'verified')>Verified</option>
                     <option value="history_verified" @selected(($filters['status'] ?? '') === 'history_verified')>History Verified</option>
                     <option value="pending" @selected(($filters['status'] ?? '') === 'pending')>Pending</option>
@@ -75,13 +76,9 @@
                             <td>
                                 @php
                                     $status = (string) ($mutation->member_point_status ?: 'unknown');
-                                    $badgeClass = match ($status) {
-                                        'verified', 'history_verified' => 'badge--success',
-                                        'failed' => 'badge--danger',
-                                        default => 'badge--warning',
-                                    };
+                                    $badgeClass = \App\Support\MemberPointStatusPresenter::badgeClass($status);
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $status }}</span>
+                                <span class="badge {{ $badgeClass }}">{{ \App\Support\MemberPointStatusPresenter::label($status) }}</span>
                             </td>
                         </tr>
                     @empty
