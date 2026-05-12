@@ -100,6 +100,11 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<AuthSession?> readCachedSession() async {
+    return null;
+  }
+
+  @override
   Future<AuthSession> register({
     required String name,
     required String phone,

@@ -8,6 +8,7 @@ import 'package:folony_kasir_mobile/data/datasources/remote/auth_remote_data_sou
 import 'package:folony_kasir_mobile/data/dtos/auth_session_dto.dart';
 import 'package:folony_kasir_mobile/data/dtos/user_dto.dart';
 import 'package:folony_kasir_mobile/data/repositories/auth_repository_impl.dart';
+import 'package:folony_kasir_mobile/domain/entities/auth_session.dart';
 
 void main() {
   group('AuthRepositoryImpl', () {
@@ -32,7 +33,8 @@ void main() {
 
       expect(session.token, 'token-login');
       expect(session.user.phone, '085891585422');
-      expect(localDataSource.savedToken, 'token-login');
+      expect(localDataSource.savedSession?.token, 'token-login');
+      expect(localDataSource.savedSession?.user.phone, '085891585422');
     });
 
     test('register saves token and returns session', () async {
@@ -58,7 +60,7 @@ void main() {
 
       expect(session.token, 'token-register');
       expect(session.user.name, 'Register User');
-      expect(localDataSource.savedToken, 'token-register');
+      expect(localDataSource.savedSession?.token, 'token-register');
     });
 
     test('logout clears token and notifies remote endpoint', () async {
@@ -115,18 +117,24 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
 class FakeAuthLocalDataSource extends AuthLocalDataSource {
   FakeAuthLocalDataSource() : super(FakeTokenStorage());
 
-  String? savedToken;
+  AuthSession? savedSession;
   bool clearTokenCalled = false;
 
   @override
-  Future<void> saveToken(String token) async {
-    savedToken = token;
+  Future<void> saveSession(AuthSession session) async {
+    savedSession = session;
   }
 
   @override
   Future<void> clearToken() async {
     clearTokenCalled = true;
-    savedToken = null;
+    savedSession = null;
+  }
+
+  @override
+  Future<void> clearSession() async {
+    clearTokenCalled = true;
+    savedSession = null;
   }
 }
 

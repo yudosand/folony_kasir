@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
@@ -11,6 +13,14 @@ class SessionController extends AsyncNotifier<AuthSession?> {
   @override
   Future<AuthSession?> build() async {
     ref.read(sessionInvalidationBusProvider).register(handleUnauthorized);
+
+    final repository = ref.read(authRepositoryProvider);
+    final cachedSession = await repository.readCachedSession();
+    if (cachedSession != null) {
+      unawaited(_refreshSessionInBackground());
+      return cachedSession;
+    }
+
     return ref.read(restoreSessionUseCaseProvider).call();
   }
 
@@ -74,5 +84,14 @@ class SessionController extends AsyncNotifier<AuthSession?> {
   Future<void> handleUnauthorized() async {
     await ref.read(logoutUseCaseProvider).call(notifyServer: false);
     state = const AsyncData(null);
+  }
+
+  Future<void> _refreshSessionInBackground() async {
+    try {
+      final restoredSession = await ref.read(restoreSessionUseCaseProvider).call();
+      state = AsyncData(restoredSession);
+    } catch (_) {
+      // Keep cached session on screen if the refresh endpoint is temporarily slow.
+    }
   }
 }

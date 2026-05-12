@@ -29,9 +29,10 @@ class AuthRepositoryImpl implements AuthRepository {
       passwordConfirmation: passwordConfirmation,
       referal: referal,
     );
-    await _localDataSource.saveToken(session.token);
+    final entity = session.toEntity();
+    await _localDataSource.saveSession(entity);
 
-    return session.toEntity();
+    return entity;
   }
 
   @override
@@ -43,9 +44,10 @@ class AuthRepositoryImpl implements AuthRepository {
       phone: phone,
       password: password,
     );
-    await _localDataSource.saveToken(session.token);
+    final entity = session.toEntity();
+    await _localDataSource.saveSession(entity);
 
-    return session.toEntity();
+    return entity;
   }
 
   @override
@@ -56,7 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> clearSession() {
-    return _localDataSource.clearToken();
+    return _localDataSource.clearSession();
   }
 
   @override
@@ -65,8 +67,24 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthSession?> readCachedSession() {
+    return _localDataSource.readCachedSession();
+  }
+
+  @override
   Future<AppUser> getMe() async {
     final user = await _remoteDataSource.getMe();
+    final token = await _localDataSource.readToken();
+    if (token != null && token.isNotEmpty) {
+      await _localDataSource.saveSession(
+        AuthSession(
+          token: token,
+          tokenType: 'Bearer',
+          user: user.toEntity(),
+        ),
+      );
+    }
+
     return user.toEntity();
   }
 }

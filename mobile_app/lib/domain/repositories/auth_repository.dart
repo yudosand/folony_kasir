@@ -22,4 +22,6 @@ abstract class AuthRepository {
   Future<void> clearSession();
 
   Future<String?> readToken();
+
+  Future<AuthSession?> readCachedSession();
 }

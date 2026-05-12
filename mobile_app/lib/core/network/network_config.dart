@@ -22,7 +22,7 @@ class NetworkConfig {
 
   static const bool enableNetworkLogs = bool.fromEnvironment(
     'ENABLE_NETWORK_LOGS',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   const NetworkConfig._();
