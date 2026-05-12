@@ -18,6 +18,7 @@ class TransactionService
         private readonly PaymentCalculationService $paymentCalculationService,
         private readonly InvoiceNumberService $invoiceNumberService,
         private readonly FoloniAppMemberPointService $foloniAppMemberPointService,
+        private readonly StockMovementService $stockMovementService,
     ) {
     }
 
@@ -246,8 +247,11 @@ class TransactionService
                         if (! $product) {
                             continue;
                         }
-                        $product->stock -= $preparedItem['quantity'];
-                        $product->save();
+                        $this->stockMovementService->recordSale(
+                            product: $product,
+                            quantity: (int) $preparedItem['quantity'],
+                            transaction: $transaction,
+                        );
                     }
 
                     $pointMutationContext = null;

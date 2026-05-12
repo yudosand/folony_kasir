@@ -9,6 +9,7 @@ class CreateProductUseCase {
   Future<Product> call({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -16,6 +17,7 @@ class CreateProductUseCase {
     return _repository.createProduct(
       name: name,
       stock: stock,
+      minimumStock: minimumStock,
       costPrice: costPrice,
       sellingPrice: sellingPrice,
       imageFilePath: imageFilePath,

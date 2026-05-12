@@ -9,6 +9,7 @@ abstract class ProductRepository {
   Future<Product> createProduct({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -18,6 +19,7 @@ abstract class ProductRepository {
     required int productId,
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,

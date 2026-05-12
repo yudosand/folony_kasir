@@ -85,6 +85,7 @@ class ProductFormController
   Future<Product?> submit({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
   }) async {
@@ -98,6 +99,7 @@ class ProductFormController
           ? await ref.read(createProductUseCaseProvider).call(
                 name: name,
                 stock: stock,
+                minimumStock: minimumStock,
                 costPrice: costPrice,
                 sellingPrice: sellingPrice,
                 imageFilePath: state.selectedImagePath,
@@ -106,6 +108,7 @@ class ProductFormController
                 productId: _initialProduct!.id,
                 name: name,
                 stock: stock,
+                minimumStock: minimumStock,
                 costPrice: costPrice,
                 sellingPrice: sellingPrice,
                 imageFilePath: state.selectedImagePath,

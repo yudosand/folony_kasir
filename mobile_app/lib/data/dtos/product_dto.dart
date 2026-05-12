@@ -6,8 +6,12 @@ class ProductDto {
     required this.id,
     required this.name,
     required this.stock,
+    required this.minimumStock,
     required this.costPrice,
     required this.sellingPrice,
+    required this.stockStatus,
+    required this.stockStatusLabel,
+    required this.needsRestock,
     this.imagePath,
     this.imageUrl,
     this.createdAt,
@@ -17,8 +21,12 @@ class ProductDto {
   final int id;
   final String name;
   final int stock;
+  final int minimumStock;
   final double costPrice;
   final double sellingPrice;
+  final String stockStatus;
+  final String stockStatusLabel;
+  final bool needsRestock;
   final String? imagePath;
   final String? imageUrl;
   final DateTime? createdAt;
@@ -29,8 +37,12 @@ class ProductDto {
       id: (json['id'] as num?)?.toInt() ?? 0,
       name: json['name'] as String? ?? '',
       stock: (json['stock'] as num?)?.toInt() ?? 0,
+      minimumStock: (json['minimum_stock'] as num?)?.toInt() ?? 0,
       costPrice: (json['cost_price'] as num?)?.toDouble() ?? 0,
       sellingPrice: (json['selling_price'] as num?)?.toDouble() ?? 0,
+      stockStatus: json['stock_status'] as String? ?? 'healthy',
+      stockStatusLabel: json['stock_status_label'] as String? ?? 'Aman',
+      needsRestock: json['needs_restock'] as bool? ?? false,
       imagePath: json['image_path'] as String?,
       imageUrl: MediaUrlResolver.resolve(json['image_url'] as String?),
       createdAt: json['created_at'] == null
@@ -47,8 +59,12 @@ class ProductDto {
       id: id,
       name: name,
       stock: stock,
+      minimumStock: minimumStock,
       costPrice: costPrice,
       sellingPrice: sellingPrice,
+      stockStatus: stockStatus,
+      stockStatusLabel: stockStatusLabel,
+      needsRestock: needsRestock,
       imagePath: imagePath,
       imageUrl: imageUrl,
       createdAt: createdAt,

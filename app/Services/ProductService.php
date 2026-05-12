@@ -6,12 +6,14 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 class ProductService
 {
     public function __construct(
         private readonly ImageStorageService $imageStorageService,
+        private readonly StockMovementService $stockMovementService,
     ) {
     }
 
@@ -50,9 +52,15 @@ class ProductService
         }
 
         unset($payload['image'], $payload['remove_image']);
+        $payload['minimum_stock'] = (int) ($payload['minimum_stock'] ?? 0);
 
         try {
-            return $user->products()->create($payload);
+            return DB::transaction(function () use ($user, $payload) {
+                $product = $user->products()->create($payload);
+                $this->stockMovementService->recordOpening($product);
+
+                return $product->refresh();
+            });
         } catch (Throwable $exception) {
             $this->imageStorageService->delete($newImagePath);
 
@@ -79,9 +87,23 @@ class ProductService
         }
 
         unset($payload['image'], $payload['remove_image']);
+        if (array_key_exists('minimum_stock', $payload)) {
+            $payload['minimum_stock'] = (int) $payload['minimum_stock'];
+        }
 
         try {
-            $product->update($payload);
+            DB::transaction(function () use ($product, $payload) {
+                $lockedProduct = Product::query()->lockForUpdate()->findOrFail($product->id);
+                $targetStock = array_key_exists('stock', $payload)
+                    ? (int) $payload['stock']
+                    : (int) $lockedProduct->stock;
+
+                $attributes = $payload;
+                unset($attributes['stock']);
+
+                $lockedProduct->update($attributes);
+                $this->stockMovementService->recordEditAdjustment($lockedProduct, $targetStock);
+            });
         } catch (Throwable $exception) {
             $this->imageStorageService->delete($newImagePath);
 

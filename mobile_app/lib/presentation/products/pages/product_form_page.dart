@@ -34,6 +34,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _stockController;
+  late final TextEditingController _minimumStockController;
   late final TextEditingController _costPriceController;
   late final TextEditingController _sellingPriceController;
 
@@ -45,6 +46,8 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
     _nameController = TextEditingController(text: product?.name ?? '');
     _stockController =
         TextEditingController(text: product?.stock.toString() ?? '');
+    _minimumStockController =
+        TextEditingController(text: product?.minimumStock.toString() ?? '0');
     _costPriceController = TextEditingController(
       text:
           product == null ? '' : RupiahFormatter.formatInput(product.costPrice),
@@ -60,6 +63,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
   void dispose() {
     _nameController.dispose();
     _stockController.dispose();
+    _minimumStockController.dispose();
     _costPriceController.dispose();
     _sellingPriceController.dispose();
     super.dispose();
@@ -72,6 +76,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
     }
 
     final stock = int.parse(_stockController.text.trim());
+    final minimumStock = int.parse(_minimumStockController.text.trim());
     final costPrice = RupiahFormatter.parse(_costPriceController.text);
     final sellingPrice = RupiahFormatter.parse(_sellingPriceController.text);
 
@@ -81,6 +86,7 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
           .submit(
             name: _nameController.text.trim(),
             stock: stock,
+            minimumStock: minimumStock,
             costPrice: costPrice,
             sellingPrice: sellingPrice,
           );
@@ -160,6 +166,19 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
                         ],
                         selectAllOnTap: widget.isEditMode,
                         validator: _validateStock,
+                      ),
+                      const SizedBox(height: 16),
+                      AppTextField(
+                        controller: _minimumStockController,
+                        label: 'Minimum Stok',
+                        hintText: 'Masukkan batas restock',
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        selectAllOnTap: widget.isEditMode,
+                        validator: _validateMinimumStock,
                       ),
                       const SizedBox(height: 16),
                       AppTextField(
@@ -374,6 +393,23 @@ class _ProductFormPageState extends ConsumerState<ProductFormPage> {
 
     if (stock < 0) {
       return 'Stok tidak boleh kurang dari 0 ya.';
+    }
+
+    return null;
+  }
+
+  String? _validateMinimumStock(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Minimum stok wajib diisi ya.';
+    }
+
+    final stock = int.tryParse(value.trim());
+    if (stock == null) {
+      return 'Minimum stok harus berupa angka bulat ya.';
+    }
+
+    if (stock < 0) {
+      return 'Minimum stok tidak boleh kurang dari 0 ya.';
     }
 
     return null;

@@ -18,6 +18,7 @@ class UpdateProductRequest extends ApiFormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'stock' => ['sometimes', 'required', 'integer', 'min:0'],
+            'minimum_stock' => ['sometimes', 'required', 'integer', 'min:0'],
             'cost_price' => ['sometimes', 'required', 'numeric', 'min:0'],
             'selling_price' => ['sometimes', 'required', 'numeric', 'min:0'],
             'image' => ['nullable', 'image', 'max:5120'],

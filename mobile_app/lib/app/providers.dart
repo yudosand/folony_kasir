@@ -13,28 +13,35 @@ import '../data/datasources/remote/auth_remote_data_source.dart';
 import '../data/datasources/remote/member_point_remote_data_source.dart';
 import '../data/datasources/remote/product_remote_data_source.dart';
 import '../data/datasources/remote/store_setting_remote_data_source.dart';
+import '../data/datasources/remote/stock_bookkeeping_remote_data_source.dart';
 import '../data/datasources/remote/transaction_remote_data_source.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/member_point_repository_impl.dart';
 import '../data/repositories/product_repository_impl.dart';
+import '../data/repositories/stock_bookkeeping_repository_impl.dart';
 import '../data/repositories/store_setting_repository_impl.dart';
 import '../data/repositories/transaction_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/member_point_repository.dart';
 import '../domain/repositories/product_repository.dart';
+import '../domain/repositories/stock_bookkeeping_repository.dart';
 import '../domain/repositories/store_setting_repository.dart';
 import '../domain/repositories/transaction_repository.dart';
+import '../domain/usecases/adjust_product_stock_use_case.dart';
 import '../domain/usecases/create_product_use_case.dart';
 import '../domain/usecases/create_transaction_use_case.dart';
 import '../domain/usecases/delete_product_use_case.dart';
 import '../domain/usecases/get_member_point_member_use_case.dart';
 import '../domain/usecases/get_invoice_use_case.dart';
 import '../domain/usecases/get_products_use_case.dart';
+import '../domain/usecases/get_stock_bookkeeping_report_use_case.dart';
+import '../domain/usecases/get_stock_card_use_case.dart';
 import '../domain/usecases/get_store_setting_use_case.dart';
 import '../domain/usecases/get_transactions_use_case.dart';
 import '../domain/usecases/login_use_case.dart';
 import '../domain/usecases/logout_use_case.dart';
 import '../domain/usecases/register_use_case.dart';
+import '../domain/usecases/restock_product_use_case.dart';
 import '../domain/usecases/restore_session_use_case.dart';
 import '../domain/usecases/update_store_setting_use_case.dart';
 import '../domain/usecases/update_product_use_case.dart';
@@ -97,6 +104,18 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepositoryImpl(ref.watch(productRemoteDataSourceProvider));
 });
 
+final stockBookkeepingRemoteDataSourceProvider =
+    Provider<StockBookkeepingRemoteDataSource>((ref) {
+  return StockBookkeepingRemoteDataSource(ref.watch(dioProvider));
+});
+
+final stockBookkeepingRepositoryProvider =
+    Provider<StockBookkeepingRepository>((ref) {
+  return StockBookkeepingRepositoryImpl(
+    ref.watch(stockBookkeepingRemoteDataSourceProvider),
+  );
+});
+
 final transactionRemoteDataSourceProvider =
     Provider<TransactionRemoteDataSource>((ref) {
   return TransactionRemoteDataSource(ref.watch(dioProvider));
@@ -145,6 +164,28 @@ final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
 
 final getProductsUseCaseProvider = Provider<GetProductsUseCase>((ref) {
   return GetProductsUseCase(ref.watch(productRepositoryProvider));
+});
+
+final getStockBookkeepingReportUseCaseProvider =
+    Provider<GetStockBookkeepingReportUseCase>((ref) {
+  return GetStockBookkeepingReportUseCase(
+    ref.watch(stockBookkeepingRepositoryProvider),
+  );
+});
+
+final getStockCardUseCaseProvider = Provider<GetStockCardUseCase>((ref) {
+  return GetStockCardUseCase(ref.watch(stockBookkeepingRepositoryProvider));
+});
+
+final restockProductUseCaseProvider = Provider<RestockProductUseCase>((ref) {
+  return RestockProductUseCase(ref.watch(stockBookkeepingRepositoryProvider));
+});
+
+final adjustProductStockUseCaseProvider =
+    Provider<AdjustProductStockUseCase>((ref) {
+  return AdjustProductStockUseCase(
+    ref.watch(stockBookkeepingRepositoryProvider),
+  );
 });
 
 final createProductUseCaseProvider = Provider<CreateProductUseCase>((ref) {

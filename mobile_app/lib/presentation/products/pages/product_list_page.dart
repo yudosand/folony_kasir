@@ -51,6 +51,16 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
     await ref.read(productListControllerProvider.notifier).refreshProducts();
   }
 
+  Future<void> _openStockCard(Product product) async {
+    await context.push(AppRoutes.stockProductDetail(product.id));
+
+    if (!mounted) {
+      return;
+    }
+
+    await ref.read(productListControllerProvider.notifier).refreshProducts();
+  }
+
   Future<void> _confirmDelete(Product product) async {
     final shouldDelete = await showDialog<bool>(
           context: context,
@@ -136,6 +146,16 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: OutlinedButton.icon(
+                            onPressed: () =>
+                                context.push(AppRoutes.stockBookkeeping),
+                            icon: const Icon(Icons.inventory_outlined),
+                            label: const Text('Buka Pembukuan Stok'),
+                          ),
+                        ),
                         const SizedBox(height: 14),
                         productsState.when(
                           loading: () => const Padding(
@@ -163,7 +183,7 @@ class _ProductListPageState extends ConsumerState<ProductListPage> {
                                   ProductCard(
                                     product: products[index],
                                     onTap: () =>
-                                        _openEditForm(products[index]),
+                                        _openStockCard(products[index]),
                                     onEdit: () =>
                                         _openEditForm(products[index]),
                                     onDelete: () =>

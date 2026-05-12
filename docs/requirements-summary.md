@@ -15,6 +15,8 @@ Mobile-style web demo used only as UI/UX and flow reference.
 - Profile / store setting
 - Product CRUD
 - Product image upload
+- Stock bookkeeping / inventory ledger
+- Restock insight for low-stock and out-of-stock products
 - Cart / checkout
 - Payment methods:
   - cash
@@ -23,13 +25,28 @@ Mobile-style web demo used only as UI/UX and flow reference.
 - Invoice payload
 - History / transaction detail
 - Reprint / resharing invoice support
+- PDF export / share for stock bookkeeping report
 
 ## Out of Scope for Current MVP
 - Barcode scanning
-- Advanced reports
 - Multi-device sync
 - Hardware-specific printer integration
 - Multi-role/complex permission system
+
+## Stock Bookkeeping Scope
+
+- Menyimpan stok awal saat produk pertama kali dibuat
+- Menyimpan mutasi stok untuk:
+  - penjualan
+  - restock manual
+  - penyesuaian manual
+- Menandai barang:
+  - aman
+  - menipis
+  - habis
+  - perlu restock
+- Menyediakan kartu stok per produk
+- Menyediakan laporan pembukuan stok yang bisa diexport dan dibagikan
 
 ## Key UX Behavior from Demo
 - Product cards show stock

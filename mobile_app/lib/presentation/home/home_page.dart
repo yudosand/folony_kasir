@@ -76,6 +76,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                   ),
                   const SizedBox(height: 14),
+                  _RestockInsightCard(
+                    needsRestockCount: productsState.valueOrNull
+                            ?.where((product) => product.needsRestock)
+                            .length ??
+                        0,
+                    onTap: () => context.push(AppRoutes.stockBookkeeping),
+                  ),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       Text(
@@ -613,4 +621,81 @@ class _TodayStats {
 
   final int transactionCount;
   final double totalSales;
+}
+
+class _RestockInsightCard extends StatelessWidget {
+  const _RestockInsightCard({
+    required this.needsRestockCount,
+    required this.onTap,
+  });
+
+  final int needsRestockCount;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final highlightColor = needsRestockCount > 0
+        ? const Color(0xFFB45309)
+        : const Color(0xFF166534);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x12000000),
+              blurRadius: 18,
+              offset: Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: highlightColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.inventory_rounded,
+                color: highlightColor,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Pembukuan Stok',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    needsRestockCount > 0
+                        ? '$needsRestockCount produk perlu dicek restock.'
+                        : 'Semua stok masih dalam kondisi aman.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded),
+          ],
+        ),
+      ),
+    );
+  }
 }

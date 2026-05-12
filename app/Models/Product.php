@@ -16,6 +16,7 @@ class Product extends Model
         'user_id',
         'name',
         'stock',
+        'minimum_stock',
         'cost_price',
         'selling_price',
         'image_path',
@@ -25,6 +26,7 @@ class Product extends Model
     {
         return [
             'stock' => 'integer',
+            'minimum_stock' => 'integer',
             'cost_price' => 'decimal:2',
             'selling_price' => 'decimal:2',
         ];
@@ -38,6 +40,13 @@ class Product extends Model
     public function transactionItems(): HasMany
     {
         return $this->hasMany(TransactionItem::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class)
+            ->orderBy('created_at')
+            ->orderBy('id');
     }
 
     public function scopeOwnedBy(Builder $query, User|int $user): Builder

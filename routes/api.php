@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MemberPointController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\StockBookkeepingController;
 use App\Http\Controllers\Api\StoreSettingController;
 use App\Http\Controllers\Api\TransactionController;
 
@@ -26,6 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/products/{product}', [ProductController::class, 'show']);
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+    Route::get('/products/{product}/stock-card', [StockBookkeepingController::class, 'show']);
+    Route::post('/products/{product}/restocks', [StockBookkeepingController::class, 'restock']);
+    Route::post('/products/{product}/adjustments', [StockBookkeepingController::class, 'adjust']);
+
+    Route::get('/stock-bookkeeping', [StockBookkeepingController::class, 'index']);
+    Route::get('/stock-bookkeeping/report', [StockBookkeepingController::class, 'report']);
 
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions', [TransactionController::class, 'store']);

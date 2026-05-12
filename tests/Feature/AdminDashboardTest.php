@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Product;
+use App\Models\StockMovement;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Models\User;
@@ -67,8 +68,26 @@ class AdminDashboardTest extends TestCase
             'user_id' => $user->id,
             'name' => 'Produk Demo',
             'stock' => 12,
+            'minimum_stock' => 4,
             'cost_price' => 2000,
             'selling_price' => 3500,
+        ]);
+
+        $product = Product::query()->firstOrFail();
+
+        StockMovement::query()->create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'product_name_snapshot' => $product->name,
+            'type' => StockMovement::TYPE_OPENING,
+            'direction' => StockMovement::DIRECTION_IN,
+            'quantity' => 12,
+            'stock_before' => 0,
+            'stock_after' => 12,
+            'unit_cost_snapshot' => 2000,
+            'reference_type' => 'product',
+            'reference_id' => $product->id,
+            'notes' => 'Stok awal produk dicatat.',
         ]);
 
         $transaction = Transaction::query()->create([
@@ -171,13 +190,27 @@ class AdminDashboardTest extends TestCase
             ->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8')
             ->assertSee('Produk Demo');
 
-        $product = Product::query()->firstOrFail();
-
         $this->get(route('admin.products.show', $product))
             ->assertOk()
             ->assertSee('Ringkasan Produk')
             ->assertSee('Riwayat Penjualan Terkait')
             ->assertSee('Produk Demo');
+
+        $this->get(route('admin.stock-bookkeeping.index'))
+            ->assertOk()
+            ->assertSee('Pembukuan Stok Global')
+            ->assertSee('Produk Demo');
+
+        $this->get(route('admin.stock-bookkeeping.export'))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->assertSee('Produk Demo');
+
+        $this->get(route('admin.stock-bookkeeping.show', $product))
+            ->assertOk()
+            ->assertSee('Ringkasan Pembukuan')
+            ->assertSee('Riwayat Mutasi Stok')
+            ->assertSee('Stok awal produk dicatat.');
 
         $this->get(route('admin.member-points.index'))
             ->assertOk()

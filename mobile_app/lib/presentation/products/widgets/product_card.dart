@@ -54,6 +54,26 @@ class ProductCard extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                       ),
+                      const SizedBox(height: 5),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _StatusBadge(
+                            label: product.stockStatusLabel,
+                            backgroundColor:
+                                _statusColor(product.stockStatus).withValues(
+                              alpha: 0.12,
+                            ),
+                            foregroundColor: _statusColor(product.stockStatus),
+                          ),
+                          _StatusBadge(
+                            label: 'Min ${product.minimumStock}',
+                            backgroundColor: const Color(0xFFF3F4F6),
+                            foregroundColor: AppColors.textSecondary,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -75,6 +95,47 @@ class ProductCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+Color _statusColor(String status) {
+  switch (status) {
+    case 'out':
+      return AppColors.danger;
+    case 'low':
+      return const Color(0xFFB45309);
+    default:
+      return const Color(0xFF166534);
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  const _StatusBadge({
+    required this.label,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final String label;
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: foregroundColor,
+              fontWeight: FontWeight.w700,
+            ),
       ),
     );
   }

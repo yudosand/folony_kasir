@@ -24,6 +24,7 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Product> createProduct({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -31,6 +32,7 @@ class ProductRepositoryImpl implements ProductRepository {
     final response = await _remoteDataSource.createProduct(
       name: name,
       stock: stock,
+      minimumStock: minimumStock,
       costPrice: costPrice,
       sellingPrice: sellingPrice,
       imageFilePath: imageFilePath,
@@ -44,6 +46,7 @@ class ProductRepositoryImpl implements ProductRepository {
     required int productId,
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -53,6 +56,7 @@ class ProductRepositoryImpl implements ProductRepository {
       productId: productId,
       name: name,
       stock: stock,
+      minimumStock: minimumStock,
       costPrice: costPrice,
       sellingPrice: sellingPrice,
       imageFilePath: imageFilePath,

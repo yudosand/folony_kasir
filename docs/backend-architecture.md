@@ -15,6 +15,7 @@
 - products
 - transactions
 - transaction_items
+- stock_movements
 
 ## Suggested App Structure
 ```text
@@ -39,6 +40,8 @@ routes/
 - `ProductImageService`
 - `TransactionService`
 - `PaymentCalculationService`
+- `StockMovementService`
+- `StockBookkeepingService`
 
 ## Main Endpoints
 ### Auth
@@ -58,11 +61,30 @@ routes/
 - POST `/api/products/{id}` with `_method=PUT` for multipart update
 - DELETE `/api/products/{id}`
 
+### Stock Bookkeeping
+- GET `/api/stock-bookkeeping`
+- GET `/api/stock-bookkeeping/report`
+- GET `/api/products/{id}/stock-card`
+- POST `/api/products/{id}/restocks`
+- POST `/api/products/{id}/adjustments`
+
 ### Transactions
 - GET `/api/transactions`
 - POST `/api/transactions`
 - GET `/api/transactions/{id}`
 - GET `/api/transactions/{id}/invoice`
+
+## Stock Bookkeeping Rules
+
+- Produk menyimpan `stock` untuk pembacaan cepat stok saat ini.
+- Produk juga menyimpan `minimum_stock` untuk insight restock.
+- Semua perubahan stok penting harus menghasilkan baris baru di `stock_movements`.
+- Tipe mutasi yang didukung:
+  - `opening`
+  - `sale`
+  - `restock`
+  - `adjustment`
+- Stok awal produk harus tetap bisa ditelusuri dari mutasi pertama.
 
 ## Response Standard
 ### success

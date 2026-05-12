@@ -42,9 +42,31 @@ Columns:
 - `user_id`
 - `name`
 - `stock`
+- `minimum_stock`
 - `cost_price`
 - `selling_price`
 - `image_path`
+
+### `stock_movements`
+
+- One-to-many from `products`
+- Ledger stok immutable untuk stok awal, penjualan, restock, dan penyesuaian
+
+Columns:
+
+- `user_id`
+- `product_id`
+- `product_name_snapshot`
+- `type` (`opening`, `sale`, `restock`, `adjustment`)
+- `direction` (`in`, `out`)
+- `quantity`
+- `stock_before`
+- `stock_after`
+- `unit_cost_snapshot`
+- `reference_type`
+- `reference_id`
+- `notes`
+- `metadata`
 
 ### `transactions`
 
@@ -93,8 +115,10 @@ Columns:
 - `users 1:1 store_settings`
 - `users 1:N products`
 - `users 1:N transactions`
+- `users 1:N stock_movements`
 - `transactions 1:N transaction_items`
 - `products 1:N transaction_items` for historical reference only
+- `products 1:N stock_movements`
 
 ## Why Snapshots Matter
 
@@ -106,3 +130,15 @@ Invoices must still be correct after:
 - a product is deleted or archived
 
 For that reason, transaction and transaction item rows keep the values that were true when checkout happened.
+
+## Why Stock Ledger Matters
+
+Pembukuan stok sekarang tidak lagi hanya mengandalkan angka `products.stock`.
+
+Setiap perubahan stok akan dicatat ke `stock_movements`, sehingga sistem bisa:
+
+- menjaga catatan stok awal saat produk pertama kali dibuat
+- menelusuri stok keluar dari transaksi
+- mencatat restock manual
+- mencatat penyesuaian manual
+- membuat laporan barang menipis / habis / perlu restock

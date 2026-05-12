@@ -239,6 +239,7 @@
                 <a href="{{ route('admin.invoices.index') }}" class="admin-nav__item {{ request()->routeIs('admin.invoices.*') ? 'is-active' : '' }}">Invoices</a>
                 <a href="{{ route('admin.transactions.index') }}" class="admin-nav__item {{ request()->routeIs('admin.transactions.*') ? 'is-active' : '' }}">Transactions</a>
                 <a href="{{ route('admin.products.index') }}" class="admin-nav__item {{ request()->routeIs('admin.products.*') ? 'is-active' : '' }}">Products</a>
+                <a href="{{ route('admin.stock-bookkeeping.index') }}" class="admin-nav__item {{ request()->routeIs('admin.stock-bookkeeping.*') ? 'is-active' : '' }}">Stock Bookkeeping</a>
                 <a href="{{ route('admin.member-points.index') }}" class="admin-nav__item {{ request()->routeIs('admin.member-points.*') ? 'is-active' : '' }}">Member Points</a>
             </nav>
 

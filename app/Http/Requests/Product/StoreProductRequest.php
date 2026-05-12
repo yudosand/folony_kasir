@@ -11,6 +11,7 @@ class StoreProductRequest extends ApiFormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'stock' => ['required', 'integer', 'min:0'],
+            'minimum_stock' => ['nullable', 'integer', 'min:0'],
             'cost_price' => ['required', 'numeric', 'min:0'],
             'selling_price' => ['required', 'numeric', 'min:0'],
             'image' => ['nullable', 'image', 'max:5120'],

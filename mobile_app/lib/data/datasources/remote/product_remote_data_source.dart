@@ -32,6 +32,7 @@ class ProductRemoteDataSource {
   Future<ProductDto> createProduct({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -42,6 +43,7 @@ class ProductRemoteDataSource {
         data: await _buildFormData(
           name: name,
           stock: stock,
+          minimumStock: minimumStock,
           costPrice: costPrice,
           sellingPrice: sellingPrice,
           imageFilePath: imageFilePath,
@@ -58,6 +60,7 @@ class ProductRemoteDataSource {
     required int productId,
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -69,6 +72,7 @@ class ProductRemoteDataSource {
         data: await _buildFormData(
           name: name,
           stock: stock,
+          minimumStock: minimumStock,
           costPrice: costPrice,
           sellingPrice: sellingPrice,
           imageFilePath: imageFilePath,
@@ -95,6 +99,7 @@ class ProductRemoteDataSource {
   Future<FormData> _buildFormData({
     required String name,
     required int stock,
+    required int minimumStock,
     required double costPrice,
     required double sellingPrice,
     String? imageFilePath,
@@ -104,6 +109,7 @@ class ProductRemoteDataSource {
     final formData = FormData.fromMap({
       'name': name,
       'stock': stock.toString(),
+      'minimum_stock': minimumStock.toString(),
       'cost_price': costPrice.toString(),
       'selling_price': sellingPrice.toString(),
       'remove_image': removeImage ? '1' : '0',

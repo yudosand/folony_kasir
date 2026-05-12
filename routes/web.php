@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\MemberPointController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\StockBookkeepingController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\File;
@@ -52,6 +53,9 @@ Route::prefix(trim((string) config('admin-dashboard.path'), '/'))
             Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
             Route::get('/products/export', [ProductController::class, 'export'])->name('admin.products.export');
             Route::get('/products/{product}', [ProductController::class, 'show'])->name('admin.products.show');
+            Route::get('/stock-bookkeeping', [StockBookkeepingController::class, 'index'])->name('admin.stock-bookkeeping.index');
+            Route::get('/stock-bookkeeping/export', [StockBookkeepingController::class, 'export'])->name('admin.stock-bookkeeping.export');
+            Route::get('/stock-bookkeeping/{product}', [StockBookkeepingController::class, 'show'])->name('admin.stock-bookkeeping.show');
             Route::get('/member-points', [MemberPointController::class, 'index'])->name('admin.member-points.index');
             Route::get('/member-points/export', [MemberPointController::class, 'export'])->name('admin.member-points.export');
         });

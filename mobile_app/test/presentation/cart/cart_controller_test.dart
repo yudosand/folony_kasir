@@ -45,7 +45,11 @@ Product _product({required int stock}) {
     id: 1,
     name: 'Teh Botol',
     stock: stock,
+    minimumStock: 1,
     costPrice: 3000,
     sellingPrice: 5000,
+    stockStatus: stock <= 0 ? 'out' : 'healthy',
+    stockStatusLabel: stock <= 0 ? 'Habis' : 'Aman',
+    needsRestock: stock <= 1,
   );
 }

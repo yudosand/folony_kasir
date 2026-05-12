@@ -14,6 +14,8 @@ import '../../presentation/products/pages/product_form_page.dart';
 import '../../presentation/products/pages/product_list_page.dart';
 import '../../presentation/settings/pages/settings_page.dart';
 import '../../presentation/splash/splash_page.dart';
+import '../../presentation/stock_bookkeeping/pages/stock_bookkeeping_page.dart';
+import '../../presentation/stock_bookkeeping/pages/stock_product_page.dart';
 import '../../presentation/shared/main_shell_page.dart';
 import '../../presentation/transactions/pages/transaction_list_page.dart';
 import 'router_refresh_listenable.dart';
@@ -99,6 +101,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.productCreate,
         builder: (context, state) => const ProductFormPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.stockBookkeeping,
+        builder: (context, state) => const StockBookkeepingPage(),
+      ),
+      GoRoute(
+        path: '/stock-bookkeeping/products/:productId',
+        builder: (context, state) {
+          final productId = int.tryParse(
+            state.pathParameters['productId'] ?? '',
+          );
+
+          if (productId == null) {
+            return const StockBookkeepingPage();
+          }
+
+          return StockProductPage(productId: productId);
+        },
       ),
       GoRoute(
         path: '/products/:productId/edit',
