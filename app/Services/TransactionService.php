@@ -129,6 +129,7 @@ class TransactionService
                             ];
                         } else {
                             $productName = trim((string) ($itemPayload['product_name'] ?? ''));
+                            $costPrice = round((float) ($itemPayload['cost_price'] ?? 0), 2);
                             $unitPrice = round((float) ($itemPayload['unit_price'] ?? 0), 2);
 
                             if ($productName === '') {
@@ -143,7 +144,7 @@ class TransactionService
                                 'product_id' => null,
                                 'quantity' => $quantity,
                                 'product_name_snapshot' => $productName,
-                                'cost_price_snapshot' => $unitPrice,
+                                'cost_price_snapshot' => $costPrice,
                                 'selling_price_snapshot' => $unitPrice,
                                 'line_subtotal' => $lineSubtotal,
                                 'is_manual' => true,

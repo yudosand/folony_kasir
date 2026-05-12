@@ -24,6 +24,7 @@ class StoreTransactionRequest extends ApiFormRequest
             'items.*.product_id' => ['nullable', 'integer'],
             'items.*.product_name' => ['nullable', 'string', 'max:255'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
+            'items.*.cost_price' => ['nullable', 'numeric', 'min:0'],
             'items.*.unit_price' => ['nullable', 'numeric', 'min:0'],
             'member_id' => ['nullable', 'integer', 'min:1'],
             'points_used' => ['nullable', 'integer', 'min:1'],
@@ -54,6 +55,17 @@ class StoreTransactionRequest extends ApiFormRequest
                     $validator->errors()->add(
                         "items.$index.unit_price",
                         'Unit price is required for manual items.'
+                    );
+                }
+
+                $hasCostPrice = array_key_exists('cost_price', $item)
+                    && $item['cost_price'] !== null
+                    && $item['cost_price'] !== '';
+
+                if (! $hasProductId && ! $hasCostPrice) {
+                    $validator->errors()->add(
+                        "items.$index.cost_price",
+                        'Cost price is required for manual items.'
                     );
                 }
             }

@@ -30,6 +30,7 @@ class ManualTransactionController extends Notifier<ManualTransactionState> {
 
       items[existingIndex] = existingItem.copyWith(
         quantity: existingItem.quantity + 1,
+        costPrice: product.costPrice,
         unitPrice: product.sellingPrice,
         availableStock: product.stock,
         imageUrl: product.imageUrl,
@@ -42,6 +43,7 @@ class ManualTransactionController extends Notifier<ManualTransactionState> {
           productId: product.id,
           name: product.name,
           quantity: 1,
+          costPrice: product.costPrice,
           unitPrice: product.sellingPrice,
           availableStock: product.stock,
           imageUrl: product.imageUrl,
@@ -56,10 +58,11 @@ class ManualTransactionController extends Notifier<ManualTransactionState> {
   void addManualItem({
     required String name,
     required int quantity,
+    required double costPrice,
     required double unitPrice,
   }) {
     final trimmedName = name.trim();
-    if (trimmedName.isEmpty || quantity < 1 || unitPrice < 0) {
+    if (trimmedName.isEmpty || quantity < 1 || unitPrice < 0 || costPrice < 0) {
       return;
     }
 
@@ -70,6 +73,7 @@ class ManualTransactionController extends Notifier<ManualTransactionState> {
           id: 'manual-${DateTime.now().microsecondsSinceEpoch}',
           name: trimmedName,
           quantity: quantity,
+          costPrice: costPrice,
           unitPrice: unitPrice,
         ),
       ],

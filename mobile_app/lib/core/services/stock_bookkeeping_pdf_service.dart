@@ -75,38 +75,6 @@ class StockBookkeepingPdfService {
                   ),
                 ),
                 pw.SizedBox(height: 18),
-                pw.Row(
-                  children: [
-                    pw.Expanded(
-                      child: _summaryCard(
-                        label: 'Jumlah Produk',
-                        value: '${report.productCount}',
-                      ),
-                    ),
-                    pw.SizedBox(width: 12),
-                    pw.Expanded(
-                      child: _summaryCard(
-                        label: 'Perlu Restock',
-                        value: '${report.needsRestockCount}',
-                      ),
-                    ),
-                    pw.SizedBox(width: 12),
-                    pw.Expanded(
-                      child: _summaryCard(
-                        label: 'Habis',
-                        value: '${report.outOfStockCount}',
-                      ),
-                    ),
-                    pw.SizedBox(width: 12),
-                    pw.Expanded(
-                      child: _summaryCard(
-                        label: 'Menipis',
-                        value: '${report.lowStockCount}',
-                      ),
-                    ),
-                  ],
-                ),
-                pw.SizedBox(height: 18),
                 if (report.rows.isEmpty)
                   pw.Container(
                     width: double.infinity,
@@ -126,11 +94,8 @@ class StockBookkeepingPdfService {
                     headers: const [
                       'Produk',
                       'Stok Awal',
-                      'Awal Periode',
-                      'Masuk',
                       'Keluar',
-                      'Stok Kini',
-                      'Min. Stok',
+                      'Sisa Stok',
                       'Status',
                     ],
                     data: report.rows
@@ -138,11 +103,8 @@ class StockBookkeepingPdfService {
                           (row) => [
                             row.productName,
                             '${row.initialStock}',
-                            '${row.stockAtPeriodStart}',
-                            '${row.stockIn}',
                             '${row.stockOut}',
                             '${row.currentStock}',
-                            '${row.minimumStock}',
                             row.stockStatusLabel,
                           ],
                         )
@@ -165,14 +127,11 @@ class StockBookkeepingPdfService {
                       ),
                     ),
                     columnWidths: {
-                      0: const pw.FlexColumnWidth(2.4),
+                      0: const pw.FlexColumnWidth(2.8),
                       1: const pw.FlexColumnWidth(1),
-                      2: const pw.FlexColumnWidth(1.1),
+                      2: const pw.FlexColumnWidth(1),
                       3: const pw.FlexColumnWidth(1),
-                      4: const pw.FlexColumnWidth(1),
-                      5: const pw.FlexColumnWidth(1),
-                      6: const pw.FlexColumnWidth(1),
-                      7: const pw.FlexColumnWidth(1.2),
+                      4: const pw.FlexColumnWidth(1.2),
                     },
                   ),
               ],
@@ -207,40 +166,6 @@ class StockBookkeepingPdfService {
     );
     await file.writeAsBytes(bytes, flush: true);
     return file;
-  }
-
-  pw.Widget _summaryCard({
-    required String label,
-    required String value,
-  }) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(14),
-      decoration: pw.BoxDecoration(
-        color: PdfColor.fromHex('#F9FAFB'),
-        borderRadius: pw.BorderRadius.circular(16),
-        border: pw.Border.all(color: PdfColors.grey300),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            label,
-            style: const pw.TextStyle(
-              fontSize: 10,
-              color: PdfColors.grey700,
-            ),
-          ),
-          pw.SizedBox(height: 6),
-          pw.Text(
-            value,
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   String _safeFileName(String label) {

@@ -26,6 +26,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
               if (item.productId != null) 'product_id': item.productId,
               if (item.productId == null) 'product_name': item.name,
               'quantity': item.quantity,
+              if (item.productId == null) 'cost_price': item.costPrice,
               if (item.productId == null) 'unit_price': item.unitPrice,
             },
           )

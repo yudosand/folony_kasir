@@ -17,6 +17,7 @@ Mobile-style web demo used only as UI/UX and flow reference.
 - Product image upload
 - Stock bookkeeping / inventory ledger
 - Restock insight for low-stock and out-of-stock products
+- Sales profit report
 - Cart / checkout
 - Payment methods:
   - cash
@@ -26,6 +27,7 @@ Mobile-style web demo used only as UI/UX and flow reference.
 - History / transaction detail
 - Reprint / resharing invoice support
 - PDF export / share for stock bookkeeping report
+- Admin export for sales profit report
 
 ## Out of Scope for Current MVP
 - Barcode scanning

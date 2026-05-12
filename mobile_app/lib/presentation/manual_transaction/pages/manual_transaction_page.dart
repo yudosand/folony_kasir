@@ -31,6 +31,7 @@ class ManualTransactionPage extends ConsumerStatefulWidget {
 class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
   late final TextEditingController _manualNameController;
   late final TextEditingController _manualQtyController;
+  late final TextEditingController _manualCostPriceController;
   late final TextEditingController _manualPriceController;
   late final TextEditingController _cashController;
   late final TextEditingController _nonCashController;
@@ -42,6 +43,7 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
     super.initState();
     _manualNameController = TextEditingController();
     _manualQtyController = TextEditingController(text: '1');
+    _manualCostPriceController = TextEditingController();
     _manualPriceController = TextEditingController();
     _cashController = TextEditingController();
     _nonCashController = TextEditingController();
@@ -58,6 +60,7 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
     _manualNameController.removeListener(_onManualNameChanged);
     _manualNameController.dispose();
     _manualQtyController.dispose();
+    _manualCostPriceController.dispose();
     _manualPriceController.dispose();
     _cashController.dispose();
     _nonCashController.dispose();
@@ -150,7 +153,7 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Ketik nama item dulu. Qty dan harga akan muncul setelah nama terisi.',
+                          'Ketik nama item dulu. Qty, harga modal, dan harga jual akan muncul setelah nama terisi.',
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: AppColors.textSecondary,
@@ -185,10 +188,10 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
                               Expanded(
                                 flex: 3,
                                 child: AppTextField(
-                                  controller: _manualPriceController,
-                                  label: 'Harga',
-                                  hintText: 'Masukkan harga item',
-                                  prefixIcon: Icons.payments_outlined,
+                                  controller: _manualCostPriceController,
+                                  label: 'Harga Modal',
+                                  hintText: 'Masukkan modal item',
+                                  prefixIcon: Icons.price_change_outlined,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
@@ -196,6 +199,18 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
                                   ],
                                 ),
                               ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          AppTextField(
+                            controller: _manualPriceController,
+                            label: 'Harga Jual',
+                            hintText: 'Masukkan harga jual item',
+                            prefixIcon: Icons.payments_outlined,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              const RupiahInputFormatter(),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -619,6 +634,7 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
   void _addManualItem() {
     final name = _manualNameController.text.trim();
     final qty = int.tryParse(_manualQtyController.text.trim()) ?? 0;
+    final costPrice = RupiahFormatter.parse(_manualCostPriceController.text);
     final price = RupiahFormatter.parse(_manualPriceController.text);
 
     if (name.isEmpty) {
@@ -638,11 +654,13 @@ class _ManualTransactionPageState extends ConsumerState<ManualTransactionPage> {
     ref.read(manualTransactionControllerProvider.notifier).addManualItem(
           name: name,
           quantity: qty,
+          costPrice: costPrice,
           unitPrice: price,
         );
 
     _manualNameController.clear();
     _manualQtyController.text = '1';
+    _manualCostPriceController.clear();
     _manualPriceController.clear();
     setState(() {});
   }
@@ -784,6 +802,13 @@ class _ManualTransactionItemTile extends StatelessWidget {
               Text(
                 '${RupiahFormatter.format(item.unitPrice)} x ${item.quantity}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Modal ${RupiahFormatter.format(item.costPrice)} • Profit ${RupiahFormatter.format((item.unitPrice - item.costPrice) * item.quantity)}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppColors.textSecondary,
                     ),
               ),

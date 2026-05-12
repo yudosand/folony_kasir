@@ -69,6 +69,7 @@ void main() {
             productId: 1,
             name: 'Produk Test',
             quantity: 1,
+            costPrice: 25000,
             unitPrice: 50000,
           ),
         ],

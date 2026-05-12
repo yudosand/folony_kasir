@@ -200,6 +200,7 @@ class _CartPageState extends ConsumerState<CartPage> {
                                 productId: item.productId,
                                 name: item.productName,
                                 quantity: item.quantity,
+                                costPrice: item.costPrice,
                                 unitPrice: item.sellingPrice,
                                 availableStock: item.stock,
                                 imageUrl: item.imageUrl,

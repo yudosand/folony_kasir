@@ -2,6 +2,7 @@ class CartItem {
   const CartItem({
     required this.productId,
     required this.productName,
+    required this.costPrice,
     required this.sellingPrice,
     required this.stock,
     required this.quantity,
@@ -10,6 +11,7 @@ class CartItem {
 
   final int productId;
   final String productName;
+  final double costPrice;
   final double sellingPrice;
   final int stock;
   final int quantity;
@@ -19,6 +21,7 @@ class CartItem {
 
   CartItem copyWith({
     String? productName,
+    double? costPrice,
     double? sellingPrice,
     int? stock,
     int? quantity,
@@ -27,6 +30,7 @@ class CartItem {
     return CartItem(
       productId: productId,
       productName: productName ?? this.productName,
+      costPrice: costPrice ?? this.costPrice,
       sellingPrice: sellingPrice ?? this.sellingPrice,
       stock: stock ?? this.stock,
       quantity: quantity ?? this.quantity,

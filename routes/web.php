@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\MemberPointController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SalesProfitReportController;
 use App\Http\Controllers\Admin\StockBookkeepingController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\UserController;
@@ -50,6 +51,8 @@ Route::prefix(trim((string) config('admin-dashboard.path'), '/'))
             Route::get('/invoices/{transaction}', [InvoiceController::class, 'show'])->name('admin.invoices.show');
             Route::get('/transactions', [TransactionController::class, 'index'])->name('admin.transactions.index');
             Route::get('/transactions/export', [TransactionController::class, 'export'])->name('admin.transactions.export');
+            Route::get('/sales-profit', [SalesProfitReportController::class, 'index'])->name('admin.sales-profit.index');
+            Route::get('/sales-profit/export', [SalesProfitReportController::class, 'export'])->name('admin.sales-profit.export');
             Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
             Route::get('/products/export', [ProductController::class, 'export'])->name('admin.products.export');
             Route::get('/products/{product}', [ProductController::class, 'show'])->name('admin.products.show');

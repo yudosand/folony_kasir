@@ -173,6 +173,18 @@ class AdminDashboardTest extends TestCase
             ->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8')
             ->assertSee('INVTEST0001');
 
+        $this->get(route('admin.sales-profit.index'))
+            ->assertOk()
+            ->assertSee('Laporan Penjualan & Profit', false)
+            ->assertSee('Produk Demo')
+            ->assertSee('INVTEST0001');
+
+        $this->get(route('admin.sales-profit.export'))
+            ->assertOk()
+            ->assertHeader('content-type', 'application/vnd.ms-excel; charset=UTF-8')
+            ->assertSee('Produk Demo')
+            ->assertSee('INVTEST0001');
+
         $this->get(route('admin.invoices.show', $transaction))
             ->assertOk()
             ->assertSee('Detail invoice')

@@ -429,4 +429,46 @@ class PosApiFlowTest extends TestCase
 
         $this->assertDatabaseCount('transactions', 1);
     }
+
+    public function test_manual_transaction_item_stores_cost_and_selling_snapshots_for_profit_reporting(): void
+    {
+        $user = \App\Models\User::factory()->create([
+            'phone' => '081234567891',
+        ]);
+
+        $user->tokens()->delete();
+        $token = $user->createToken('test')->plainTextToken;
+
+        $headers = [
+            'Authorization' => 'Bearer '.$token,
+            'Accept' => 'application/json',
+        ];
+
+        $response = $this->postJson('/api/transactions', [
+            'items' => [
+                [
+                    'product_name' => 'Jasa Antar',
+                    'quantity' => 2,
+                    'cost_price' => 5000,
+                    'unit_price' => 8000,
+                ],
+            ],
+            'payment_method' => 'cash',
+            'cash_amount' => 16000,
+        ], $headers);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.transaction.items.0.product_name_snapshot', 'Jasa Antar')
+            ->assertJsonPath('data.transaction.items.0.cost_price_snapshot', 5000)
+            ->assertJsonPath('data.transaction.items.0.selling_price_snapshot', 8000);
+
+        $this->assertDatabaseHas('transaction_items', [
+            'product_name_snapshot' => 'Jasa Antar',
+            'quantity' => 2,
+            'cost_price_snapshot' => 5000,
+            'selling_price_snapshot' => 8000,
+        ]);
+    }
 }

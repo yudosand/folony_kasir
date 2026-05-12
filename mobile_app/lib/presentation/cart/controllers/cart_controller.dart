@@ -29,6 +29,7 @@ class CartController extends Notifier<CartState> {
       currentItems[existingIndex] = existingItem.copyWith(
         quantity: existingItem.quantity + 1,
         stock: product.stock,
+        costPrice: product.costPrice,
         sellingPrice: product.sellingPrice,
         imageUrl: product.imageUrl,
       );
@@ -37,6 +38,7 @@ class CartController extends Notifier<CartState> {
         CartItem(
           productId: product.id,
           productName: product.name,
+          costPrice: product.costPrice,
           sellingPrice: product.sellingPrice,
           stock: product.stock,
           quantity: 1,
