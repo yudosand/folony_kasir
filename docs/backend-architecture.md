@@ -69,6 +69,9 @@ routes/
 - POST `/api/products/{id}/restocks`
 - POST `/api/products/{id}/adjustments`
 
+### Sales Profit
+- GET `/api/sales-profit/report`
+
 ### Transactions
 - GET `/api/transactions`
 - POST `/api/transactions`
@@ -80,6 +83,7 @@ routes/
 - `transaction_items.cost_price_snapshot` harus menyimpan modal saat transaksi terjadi.
 - `transaction_items.selling_price_snapshot` harus menyimpan harga jual saat transaksi terjadi.
 - Item manual wajib membawa `cost_price` dan `unit_price` agar profit tidak salah dihitung.
+- Endpoint mobile `sales-profit/report` hanya boleh menampilkan transaksi milik user yang sedang login.
 - Profit kotor per item dihitung sebagai:
   - `qty x selling_price_snapshot`
   - dikurangi `qty x cost_price_snapshot`

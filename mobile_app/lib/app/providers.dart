@@ -12,18 +12,21 @@ import '../data/datasources/local/auth_local_data_source.dart';
 import '../data/datasources/remote/auth_remote_data_source.dart';
 import '../data/datasources/remote/member_point_remote_data_source.dart';
 import '../data/datasources/remote/product_remote_data_source.dart';
+import '../data/datasources/remote/sales_profit_remote_data_source.dart';
 import '../data/datasources/remote/store_setting_remote_data_source.dart';
 import '../data/datasources/remote/stock_bookkeeping_remote_data_source.dart';
 import '../data/datasources/remote/transaction_remote_data_source.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/member_point_repository_impl.dart';
 import '../data/repositories/product_repository_impl.dart';
+import '../data/repositories/sales_profit_repository_impl.dart';
 import '../data/repositories/stock_bookkeeping_repository_impl.dart';
 import '../data/repositories/store_setting_repository_impl.dart';
 import '../data/repositories/transaction_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../domain/repositories/member_point_repository.dart';
 import '../domain/repositories/product_repository.dart';
+import '../domain/repositories/sales_profit_repository.dart';
 import '../domain/repositories/stock_bookkeeping_repository.dart';
 import '../domain/repositories/store_setting_repository.dart';
 import '../domain/repositories/transaction_repository.dart';
@@ -34,6 +37,7 @@ import '../domain/usecases/delete_product_use_case.dart';
 import '../domain/usecases/get_member_point_member_use_case.dart';
 import '../domain/usecases/get_invoice_use_case.dart';
 import '../domain/usecases/get_products_use_case.dart';
+import '../domain/usecases/get_sales_profit_report_use_case.dart';
 import '../domain/usecases/get_stock_bookkeeping_report_use_case.dart';
 import '../domain/usecases/get_stock_card_use_case.dart';
 import '../domain/usecases/get_store_setting_use_case.dart';
@@ -104,6 +108,15 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepositoryImpl(ref.watch(productRemoteDataSourceProvider));
 });
 
+final salesProfitRemoteDataSourceProvider =
+    Provider<SalesProfitRemoteDataSource>((ref) {
+  return SalesProfitRemoteDataSource(ref.watch(dioProvider));
+});
+
+final salesProfitRepositoryProvider = Provider<SalesProfitRepository>((ref) {
+  return SalesProfitRepositoryImpl(ref.watch(salesProfitRemoteDataSourceProvider));
+});
+
 final stockBookkeepingRemoteDataSourceProvider =
     Provider<StockBookkeepingRemoteDataSource>((ref) {
   return StockBookkeepingRemoteDataSource(ref.watch(dioProvider));
@@ -164,6 +177,11 @@ final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
 
 final getProductsUseCaseProvider = Provider<GetProductsUseCase>((ref) {
   return GetProductsUseCase(ref.watch(productRepositoryProvider));
+});
+
+final getSalesProfitReportUseCaseProvider =
+    Provider<GetSalesProfitReportUseCase>((ref) {
+  return GetSalesProfitReportUseCase(ref.watch(salesProfitRepositoryProvider));
 });
 
 final getStockBookkeepingReportUseCaseProvider =

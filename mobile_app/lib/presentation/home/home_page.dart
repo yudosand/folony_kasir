@@ -140,20 +140,43 @@ class _HomePageState extends ConsumerState<HomePage> {
                         const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: FilledButton(
-                            onPressed: () => context.go(AppRoutes.transactions),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: const Color(0xFF245C43),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              FilledButton(
+                                onPressed: () =>
+                                    context.go(AppRoutes.transactions),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: const Color(0xFF245C43),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: const Text('Laporan Transaksi'),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                              FilledButton.tonal(
+                                onPressed: () =>
+                                    context.push(AppRoutes.salesProfit),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: AppColors.primaryDark,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: const Text('Laporan Profit'),
                               ),
-                            ),
-                            child: const Text('Lihat Laporan Transaksi'),
+                            ],
                           ),
                         ),
                       ],

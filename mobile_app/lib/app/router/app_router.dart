@@ -11,6 +11,7 @@ import '../../presentation/home/home_page.dart';
 import '../../presentation/invoice/pages/invoice_page.dart';
 import '../../presentation/manual_transaction/pages/manual_transaction_page.dart';
 import '../../presentation/products/pages/product_form_page.dart';
+import '../../presentation/sales_profit/pages/sales_profit_page.dart';
 import '../../presentation/products/pages/product_list_page.dart';
 import '../../presentation/settings/pages/settings_page.dart';
 import '../../presentation/splash/splash_page.dart';
@@ -105,6 +106,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.stockBookkeeping,
         builder: (context, state) => const StockBookkeepingPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.salesProfit,
+        builder: (context, state) => const SalesProfitPage(),
       ),
       GoRoute(
         path: '/stock-bookkeeping/products/:productId',

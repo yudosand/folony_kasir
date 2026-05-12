@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -41,9 +42,51 @@ class SalesProfitReportService
         ];
     }
 
-    private function rowsQuery(array $filters = []): Builder
+    public function reportForUser(User $user, array $filters = []): array
     {
-        return $this->filteredQuery($filters)
+        $rows = $this->rowsForUser($user, $filters);
+
+        $totalRevenue = (float) $rows->sum('total_selling');
+        $totalCost = (float) $rows->sum('total_cost');
+        $totalProfit = (float) $rows->sum('total_profit');
+        $summary = [
+            'transaction_count' => $rows->pluck('transaction_id')->unique()->count(),
+            'quantity_sold' => (int) $rows->sum('quantity'),
+            'total_revenue' => round($totalRevenue, 2),
+            'total_cost' => round($totalCost, 2),
+            'total_profit' => round($totalProfit, 2),
+            'profit_margin_percent' => $totalRevenue > 0
+                ? round(($totalProfit / $totalRevenue) * 100, 2)
+                : 0.0,
+        ];
+
+        return [
+            'summary' => $summary,
+            'rows' => $rows->map(function (object $row): array {
+                return [
+                    'id' => (int) $row->id,
+                    'transaction_id' => (int) $row->transaction_id,
+                    'invoice_number' => $row->invoice_number,
+                    'transaction_date' => optional($row->transaction_date)?->toISOString()
+                        ?? $row->transaction_date,
+                    'payment_method' => $row->payment_method,
+                    'payment_status' => $row->payment_status,
+                    'cashier_name' => $row->cashier_name,
+                    'product_name' => $row->product_name_snapshot,
+                    'quantity' => (int) $row->quantity,
+                    'cost_price' => round((float) $row->cost_price_snapshot, 2),
+                    'selling_price' => round((float) $row->selling_price_snapshot, 2),
+                    'total_cost' => round((float) $row->total_cost, 2),
+                    'total_selling' => round((float) $row->total_selling, 2),
+                    'total_profit' => round((float) $row->total_profit, 2),
+                ];
+            })->values(),
+        ];
+    }
+
+    private function rowsQuery(array $filters = [], ?User $user = null): Builder
+    {
+        return $this->filteredQuery($filters, $user)
             ->selectRaw('
                 transaction_items.id,
                 transactions.id as transaction_id,
@@ -64,9 +107,9 @@ class SalesProfitReportService
             ->orderByDesc('transaction_items.id');
     }
 
-    private function summaryQuery(array $filters = []): Builder
+    private function summaryQuery(array $filters = [], ?User $user = null): Builder
     {
-        return $this->filteredQuery($filters)
+        return $this->filteredQuery($filters, $user)
             ->selectRaw('
                 COUNT(DISTINCT transactions.id) as transaction_count,
                 COALESCE(SUM(transaction_items.quantity), 0) as quantity_sold,
@@ -76,7 +119,12 @@ class SalesProfitReportService
             ');
     }
 
-    private function filteredQuery(array $filters = []): Builder
+    private function rowsForUser(User $user, array $filters = []): Collection
+    {
+        return $this->rowsQuery($filters, $user)->get();
+    }
+
+    private function filteredQuery(array $filters = [], ?User $user = null): Builder
     {
         $search = trim((string) ($filters['search'] ?? ''));
         $paymentMethod = trim((string) ($filters['payment_method'] ?? ''));
@@ -87,6 +135,7 @@ class SalesProfitReportService
         return DB::table('transaction_items')
             ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
             ->leftJoin('users', 'users.id', '=', 'transactions.user_id')
+            ->when($user !== null, fn (Builder $query) => $query->where('transactions.user_id', $user->id))
             ->when($search !== '', function (Builder $query) use ($search) {
                 $query->where(function (Builder $builder) use ($search) {
                     $builder

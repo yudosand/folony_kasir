@@ -5,6 +5,7 @@ class ApiConstants {
   static const String authMe = '/auth/me';
   static const String storeSetting = '/store-setting';
   static const String products = '/products';
+  static const String salesProfitReport = '/sales-profit/report';
   static const String stockBookkeeping = '/stock-bookkeeping';
   static const String stockBookkeepingReport = '/stock-bookkeeping/report';
   static const String transactions = '/transactions';

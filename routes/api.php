@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MemberPointController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SalesProfitReportController;
 use App\Http\Controllers\Api\StockBookkeepingController;
 use App\Http\Controllers\Api\StoreSettingController;
 use App\Http\Controllers\Api\TransactionController;
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/stock-bookkeeping', [StockBookkeepingController::class, 'index']);
     Route::get('/stock-bookkeeping/report', [StockBookkeepingController::class, 'report']);
+    Route::get('/sales-profit/report', [SalesProfitReportController::class, 'report']);
 
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions', [TransactionController::class, 'store']);
