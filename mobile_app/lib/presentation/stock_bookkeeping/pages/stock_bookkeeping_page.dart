@@ -75,26 +75,6 @@ class _StockBookkeepingPageState extends ConsumerState<StockBookkeepingPage> {
                       runSpacing: 8,
                       children: [
                         _FilterChip(
-                          label: 'Semua',
-                          selected: notifier.status == null,
-                          onTap: () => notifier.setStatus(null),
-                        ),
-                        _FilterChip(
-                          label: 'Aman',
-                          selected: notifier.status == 'healthy',
-                          onTap: () => notifier.setStatus('healthy'),
-                        ),
-                        _FilterChip(
-                          label: 'Menipis',
-                          selected: notifier.status == 'low',
-                          onTap: () => notifier.setStatus('low'),
-                        ),
-                        _FilterChip(
-                          label: 'Habis',
-                          selected: notifier.status == 'out',
-                          onTap: () => notifier.setStatus('out'),
-                        ),
-                        _FilterChip(
                           label: notifier.dateRange == null
                               ? 'Pilih Periode'
                               : '${notifier.dateRange!.dateFrom} - ${notifier.dateRange!.dateTo}',
@@ -104,7 +84,11 @@ class _StockBookkeepingPageState extends ConsumerState<StockBookkeepingPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    _SummaryCards(report: report),
+                    _SummaryCards(
+                      report: report,
+                      selectedStatus: notifier.status,
+                      onSelectStatus: notifier.setStatus,
+                    ),
                     const SizedBox(height: 16),
                     if (report.rows.isEmpty)
                       const _EmptyState(
@@ -346,74 +330,128 @@ class _StockBookkeepingPageState extends ConsumerState<StockBookkeepingPage> {
 }
 
 class _SummaryCards extends StatelessWidget {
-  const _SummaryCards({required this.report});
+  const _SummaryCards({
+    required this.report,
+    required this.selectedStatus,
+    required this.onSelectStatus,
+  });
 
   final StockBookkeepingReport report;
+  final String? selectedStatus;
+  final Future<void> Function(String? status) onSelectStatus;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: _SummaryCard(
-            label: 'Produk',
-            value: '${report.productCount}',
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCardButton(
+                label: 'Semua',
+                value: '${report.productCount}',
+                selected: selectedStatus == null,
+                onTap: () => onSelectStatus(null),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _SummaryCardButton(
+                label: 'Aman',
+                value: '${report.healthyCount}',
+                selected: selectedStatus == 'healthy',
+                onTap: () => onSelectStatus('healthy'),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _SummaryCard(
-            label: 'Perlu Restock',
-            value: '${report.needsRestockCount}',
-          ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCardButton(
+                label: 'Menipis',
+                value: '${report.lowStockCount}',
+                selected: selectedStatus == 'low',
+                onTap: () => onSelectStatus('low'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _SummaryCardButton(
+                label: 'Habis',
+                value: '${report.outOfStockCount}',
+                selected: selectedStatus == 'out',
+                onTap: () => onSelectStatus('out'),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _SummaryCard(
-            label: 'Habis',
-            value: '${report.outOfStockCount}',
-          ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _SummaryCardButton(
+                label: 'Perlu Restock',
+                value: '${report.needsRestockCount}',
+                selected: selectedStatus == 'restock',
+                onTap: () => onSelectStatus('restock'),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
-class _SummaryCard extends StatelessWidget {
-  const _SummaryCard({
+class _SummaryCardButton extends StatelessWidget {
+  const _SummaryCardButton({
     required this.label,
     required this.value,
+    required this.selected,
+    required this.onTap,
   });
 
   final String label;
   final String value;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
-                ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.primary : Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: selected ? AppColors.primary : const Color(0x14000000),
           ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-          ),
-        ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: selected ? Colors.white : AppColors.textSecondary,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: selected ? Colors.white : AppColors.textPrimary,
+                    fontWeight: FontWeight.w800,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -119,7 +119,7 @@ class StockBookkeepingApiTest extends TestCase
 
         $this->getJson('/api/stock-bookkeeping/report?status=restock', $headers)
             ->assertOk()
-            ->assertJsonPath('data.summary.product_count', 2)
+            ->assertJsonPath('data.summary.product_count', 3)
             ->assertJsonPath('data.summary.needs_restock_count', 2)
             ->assertJsonPath('data.summary.out_of_stock_count', 1)
             ->assertJsonPath('data.summary.low_stock_count', 1)

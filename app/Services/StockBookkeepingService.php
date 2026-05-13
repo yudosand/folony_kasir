@@ -46,15 +46,25 @@ class StockBookkeepingService
 
     public function reportForUser(User $user, array $filters): array
     {
-        $products = $this->productBaseQuery($user, $filters)->get();
-        $rows = $this->buildRows($products, $filters)->values();
+        $rows = $this->buildRows(
+            $this->productBaseQuery($user, $filters)->get(),
+            $filters,
+        )->values();
+
+        $summaryFilters = $filters;
+        unset($summaryFilters['status']);
+
+        $summaryRows = $this->buildRows(
+            $this->productBaseQuery($user, $summaryFilters)->get(),
+            $summaryFilters,
+        )->values();
 
         return [
             'summary' => [
-                'product_count' => $rows->count(),
-                'needs_restock_count' => $rows->where('needs_restock', true)->count(),
-                'out_of_stock_count' => $rows->where('stock_status', 'out')->count(),
-                'low_stock_count' => $rows->where('stock_status', 'low')->count(),
+                'product_count' => $summaryRows->count(),
+                'needs_restock_count' => $summaryRows->where('needs_restock', true)->count(),
+                'out_of_stock_count' => $summaryRows->where('stock_status', 'out')->count(),
+                'low_stock_count' => $summaryRows->where('stock_status', 'low')->count(),
             ],
             'rows' => $rows,
         ];

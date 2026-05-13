@@ -14,4 +14,6 @@ class StockBookkeepingReport {
   final int outOfStockCount;
   final int lowStockCount;
   final List<StockBookkeepingRow> rows;
+
+  int get healthyCount => productCount - needsRestockCount;
 }
