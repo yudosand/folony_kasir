@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -316,6 +317,10 @@ class StockProductPage extends ConsumerWidget {
                 TextField(
                   controller: costController,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    const RupiahInputFormatter(),
+                  ],
                   decoration: const InputDecoration(
                     labelText: 'Harga beli opsional',
                   ),
@@ -352,7 +357,7 @@ class StockProductPage extends ConsumerWidget {
         quantity: int.parse(quantityController.text.trim()),
         unitCost: costController.text.trim().isEmpty
             ? null
-            : double.tryParse(costController.text.trim()),
+            : RupiahFormatter.parse(costController.text),
         notes: notesController.text.trim().isEmpty
             ? null
             : notesController.text.trim(),
