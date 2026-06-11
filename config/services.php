@@ -36,15 +36,15 @@ return [
     ],
 
     'foodukm_auth' => [
-        'login_url' => env('FOODUKM_LOGIN_URL', 'https://dev.foodukm.com/app/api_login_v2'),
-        'register_url' => env('FOODUKM_REGISTER_URL', 'https://dev.foodukm.com/app/api_registrasi_v2'),
+        'login_url' => env('FOODUKM_LOGIN_URL', 'https://api.foodukm.com/app/api_login_v2'),
+        'register_url' => env('FOODUKM_REGISTER_URL', 'https://api.foodukm.com/app/api_registrasi_v2'),
     ],
 
     'foloni_app_admin' => [
-        'login_url' => env('FOLONI_APP_ADMIN_LOGIN_URL', 'https://dev.foodukm.com/adm/user/login'),
-        'member_points_url' => env('FOLONI_APP_MEMBER_POINTS_URL', 'https://dev.foodukm.com/adm/finance/poin/member'),
-        'point_history_url' => env('FOLONI_APP_POINT_HISTORY_URL', 'https://dev.foodukm.com/adm/finance/poin/history'),
-        'point_mutation_url' => env('FOLONI_APP_POINT_MUTATION_URL', 'https://dev.foodukm.com/adm/finance/poin'),
+        'login_url' => env('FOLONI_APP_ADMIN_LOGIN_URL', 'https://api.foodukm.com/adm/user/login'),
+        'member_points_url' => env('FOLONI_APP_MEMBER_POINTS_URL', 'https://api.foodukm.com/adm/finance/poin/member'),
+        'point_history_url' => env('FOLONI_APP_POINT_HISTORY_URL', 'https://api.foodukm.com/adm/finance/poin/history'),
+        'point_mutation_url' => env('FOLONI_APP_POINT_MUTATION_URL', 'https://api.foodukm.com/adm/finance/poin'),
         'user' => env('FOLONI_APP_ADMIN_USER'),
         'password' => env('FOLONI_APP_ADMIN_PASSWORD'),
         'token_cache_minutes' => (int) env('FOLONI_APP_ADMIN_TOKEN_CACHE_MINUTES', 30),
